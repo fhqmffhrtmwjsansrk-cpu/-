@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>알고리즘과 현대 컴퓨팅</title>
+<style>
+  :root{
+    --bg:#050508;
+    --panel:#0b0d14;
+    --panel2:#0e1119;
+    --border:#1c2130;
+    --cyan:#22d3ee;
+    --cyan-bright:#67e8f9;
+    --purple:#a855f7;
+    --pink:#ec4899;
+    --red:#e11d48;
+    --text:#e5e7eb;
+    --muted:#9ca3af;
+    --mono:'Consolas','D2Coding',monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+    line-height:1.7;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:
+      radial-gradient(600px 400px at 85% 10%, rgba(168,85,247,.07), transparent 70%),
+      radial-gradient(500px 400px at 10% 90%, rgba(34,211,238,.06), transparent 70%);
+  }
+  section{
+    position:relative;z-index:1;
+    max-width:1100px;margin:0 auto;
+    padding:90px 32px;
+  }
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:100vh;display:flex;flex-direction:column;
+    justify-content:center;align-items:center;text-align:center;
+  }
+  .badge{
+    display:inline-block;
+    border:1px solid var(--cyan);
+    border-radius:999px;
+    padding:8px 24px;
+    font-size:.8rem;font-weight:700;letter-spacing:.25em;
+    color:var(--cyan-bright);
+    box-shadow:0 0 18px rgba(34,211,238,.35), inset 0 0 12px rgba(34,211,238,.08);
+    margin-bottom:34px;
+    animation:pulse 3s ease-in-out infinite;
+  }
+  @keyframes pulse{50%{box-shadow:0 0 30px rgba(34,211,238,.55), inset 0 0 12px rgba(34,211,238,.15);}}
+  .hero h1{
+    font-size:clamp(2.2rem,6vw,4rem);
+    font-weight:900;letter-spacing:-.02em;line-height:1.25;
+  }
+  .hero h1 .glow{
+    color:var(--cyan-bright);
+    text-shadow:0 0 24px rgba(34,211,238,.6);
+  }
+  .hero p{margin-top:26px;color:var(--muted);font-size:1.05rem;}
+  .scroll-hint{
+    margin-top:70px;color:var(--muted);font-size:.85rem;
+    animation:bob 2s ease-in-out infinite;
+  }
+  @keyframes bob{50%{transform:translateY(8px);}}
+  /* ---------- Section headers ---------- */
+  .sec-title{
+    display:flex;align-items:center;gap:14px;
+    font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:800;
+    padding-bottom:18px;margin-bottom:44px;
+    border-bottom:1px solid var(--border);
+  }
+  .sec-title::before{
+    content:'';width:6px;height:1.3em;border-radius:3px;
+    background:linear-gradient(180deg,var(--cyan),var(--purple));
+    flex:none;
+  }
+  /* ---------- Interstitials ---------- */
+  .inter{
+    text-align:center;min-height:70vh;display:flex;flex-direction:column;
+    justify-content:center;align-items:center;
+  }
+  .inter .bar{
+    width:100px;height:5px;border-radius:3px;margin-bottom:36px;
+    background:linear-gradient(90deg,var(--cyan),var(--purple));
+    box-shadow:0 0 16px rgba(34,211,238,.4);
+  }
+  .inter h2{font-size:clamp(1.8rem,4.5vw,2.8rem);font-weight:900;line-height:1.4;}
+  .inter p{margin-top:22px;color:var(--muted);max-width:640px;}
+  /* ---------- Cards ---------- */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:34px 30px;
+    transition:transform .25s, border-color .25s, box-shadow .25s;
+  }
+  .card:hover{
+    transform:translateY(-4px);
+    border-color:rgba(34,211,238,.5);
+    box-shadow:0 8px 30px rgba(34,211,238,.08);
+  }
+  .card h3{font-size:1.2rem;font-weight:800;margin-bottom:16px;}
+  .card p{color:var(--muted);font-size:.95rem;}
+  .card .icon{font-size:1.9rem;margin-bottom:18px;color:var(--purple);}
+  .bigo-chip{
+    margin-top:22px;border:1px dashed #374151;border-radius:10px;
+    text-align:center;padding:12px;font-family:var(--mono);
+    font-style:italic;font-weight:700;letter-spacing:.05em;
+  }
+  /* ---------- Simulator layout ---------- */
+  .sim{display:grid;grid-template-columns:260px 1fr;gap:26px;align-items:stretch;}
+  .panel{
+    background:var(--panel);border:1px solid var(--border);
+    border-radius:16px;padding:26px;
+  }
+  .panel h4{
+    font-size:1rem;font-weight:800;padding-bottom:14px;margin-bottom:20px;
+    border-bottom:1px solid var(--border);
+  }
+  label.small{display:block;font-size:.82rem;color:var(--muted);margin-bottom:8px;}
+  select, textarea{
+    width:100%;background:#05060a;color:var(--text);
+    border:1px solid var(--border);border-radius:10px;
+    padding:12px 14px;font-size:.95rem;font-family:inherit;
+  }
+  textarea{font-family:var(--mono);resize:vertical;min-height:110px;}
+  select:focus,textarea:focus{outline:none;border-color:var(--cyan);}
+  .btn{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    width:100%;padding:14px;margin-top:14px;
+    border:none;border-radius:10px;cursor:pointer;
+    font-size:.98rem;font-weight:800;font-family:inherit;
+    transition:filter .2s, transform .1s;
+  }
+  .btn:active{transform:scale(.98);}
+  .btn-play{
+    background:linear-gradient(90deg,var(--cyan),var(--cyan-bright));
+    color:#04252b;
+    box-shadow:0 0 22px rgba(34,211,238,.35);
+  }
+  .btn-play:hover{filter:brightness(1.1);}
+  .btn-play:disabled{filter:grayscale(.7) brightness(.6);cursor:not-allowed;}
+  .btn-ghost{
+    background:#12141d;color:var(--text);border:1px solid var(--border);
+  }
+  .btn-ghost:hover{border-color:var(--cyan);}
+  .speed-row{margin-top:22px;}
+  input[type=range]{width:100%;accent-color:var(--purple);}
+  /* stats */
+  .stats{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:22px;}
+  .stat{
+    border:1px solid var(--border);border-radius:8px;
+    background:#05060a;padding:7px 14px;
+    font-family:var(--mono);font-size:.85rem;
+  }
+  .stat b{color:var(--cyan-bright);font-weight:700;}
+  .stat b.o{color:var(--purple);}
+  /* bars */
+  #bars{
+    display:flex;align-items:flex-end;gap:5px;
+    height:300px;padding-bottom:14px;
+    border-bottom:1px solid var(--border);
+  }
+  .bar-el{
+    flex:1;border-radius:5px 5px 0 0;
+    background:linear-gradient(180deg,var(--cyan),#0e7490);
+    transition:height .12s;
+    position:relative;min-width:8px;
+  }
+  .bar-el.compare{background:linear-gradient(180deg,#fbbf24,#b45309);}
+  .bar-el.swap{background:linear-gradient(180deg,var(--pink),#9d174d);}
+  .bar-el.sorted{background:linear-gradient(180deg,var(--purple),#6d28d9);}
+  .bar-el span{
+    position:absolute;top:-24px;left:50%;transform:translateX(-50%);
+    font-family:var(--mono);font-size:.68rem;color:var(--muted);
+  }
+  /* ---------- Caesar ---------- */
+  .caesar{display:grid;grid-template-columns:1fr 1fr;gap:26px;}
+  .cipher-out{
+    background:#05060a;border:1px solid var(--border);border-radius:10px;
+    min-height:110px;padding:14px;font-family:var(--mono);
+    color:var(--cyan-bright);word-break:break-all;white-space:pre-wrap;
+  }
+  .key-row{
+    display:flex;align-items:center;gap:16px;margin-top:22px;
+    background:#05060a;border:1px solid var(--border);border-radius:10px;
+    padding:14px 18px;
+  }
+  .key-row .kv{font-family:var(--mono);font-size:1.2rem;font-weight:800;color:var(--purple);min-width:2ch;text-align:right;}
+  .ascii-demo{
+    margin-top:22px;background:#05060a;border:1px solid var(--border);
+    border-radius:10px;padding:20px;text-align:center;
+  }
+  .ascii-demo .cap{font-size:.8rem;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:16px;}
+  .ascii-flow{display:flex;align-items:center;justify-content:center;gap:16px;font-family:var(--mono);}
+  .chip{
+    width:46px;height:46px;display:flex;align-items:center;justify-content:center;
+    border-radius:8px;font-weight:800;font-size:1.2rem;
+  }
+  .chip.from{border:2px solid var(--cyan);color:var(--cyan-bright);box-shadow:0 0 12px rgba(34,211,238,.3);}
+  .chip.to{border:2px solid var(--purple);color:#d8b4fe;box-shadow:0 0 12px rgba(168,85,247,.35);}
+  .ascii-flow .arrow{color:var(--muted);font-size:.85rem;}
+  /* ---------- Big-O chart ---------- */
+  .orow{display:grid;grid-template-columns:170px 1fr;align-items:center;gap:16px;margin-bottom:18px;}
+  .orow .lab{font-family:var(--mono);font-size:.85rem;color:var(--muted);text-align:right;}
+  .track{background:#0d0f17;border:1px solid var(--border);border-radius:8px;height:34px;overflow:hidden;}
+  .fill{
+    height:100%;border-radius:8px 0 0 8px;width:0;
+    display:flex;align-items:center;justify-content:flex-end;
+    padding-right:12px;font-family:var(--mono);font-size:.78rem;font-weight:700;
+    color:#fff;white-space:nowrap;
+    transition:width 1.2s cubic-bezier(.22,1,.36,1);
+  }
+  .f1{background:linear-gradient(90deg,#22d3ee,#67e8f9);color:#053b45;}
+  .f2{background:linear-gradient(90deg,#06b6d4,#22d3ee);color:#053b45;}
+  .f3{background:linear-gradient(90deg,#a855f7,#c084fc);}
+  .f4{background:linear-gradient(90deg,#e11d48,#f43f5e);}
+  .onote{margin-top:26px;color:var(--muted);font-size:.92rem;text-align:center;}
+  .onote em{color:var(--cyan-bright);font-style:normal;}
+  /* ---------- Timeline ---------- */
+  .tl{position:relative;padding:60px 0;}
+  .tl-line{
+    position:absolute;left:0;right:0;top:50%;height:4px;border-radius:2px;
+    background:linear-gradient(90deg,var(--cyan),var(--purple));
+  }
+  .tl-items{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;position:relative;}
+  .tl-item{position:relative;display:flex;flex-direction:column;align-items:center;}
+  .tl-dot{
+    width:22px;height:22px;border-radius:50%;
+    background:var(--bg);border:4px solid var(--cyan);
+    box-shadow:0 0 14px rgba(34,211,238,.5);z-index:2;
+  }
+  .tl-item:nth-child(even) .tl-dot{border-color:var(--purple);box-shadow:0 0 14px rgba(168,85,247,.5);}
+  .tl-card{
+    background:var(--panel);border:1px solid var(--border);border-radius:12px;
+    padding:20px;width:100%;
+  }
+  .tl-card h5{font-size:.95rem;font-weight:800;margin-bottom:8px;}
+  .tl-card p{font-size:.8rem;color:var(--muted);line-height:1.6;}
+  .tl-item:nth-child(odd){flex-direction:column;}
+  .tl-item:nth-child(odd) .tl-card{order:2;margin-top:26px;}
+  .tl-item:nth-child(odd) .tl-dot{order:1;}
+  .tl-item:nth-child(even) .tl-card{margin-bottom:26px;}
+  /* reveal on scroll */
+  .rv{opacity:0;transform:translateY(28px);transition:opacity .7s, transform .7s;}
+  .rv.on{opacity:1;transform:none;}
+  footer{
+    text-align:center;color:#4b5563;font-size:.85rem;
+    padding:50px 20px;position:relative;z-index:1;
+  }
+  @media(max-width:860px){
+    .grid2,.grid3,.caesar{grid-template-columns:1fr;}
+    .sim{grid-template-columns:1fr;}
+    .tl-line{display:none;}
+    .tl-items{grid-template-columns:1fr;}
+    .tl-item .tl-card{order:2!important;margin:14px 0 0!important;}
+    .tl-item .tl-dot{order:1;}
+    .orow{grid-template-columns:1fr;gap:6px;}
+    .orow .lab{text-align:left;}
+    section{padding:64px 20px;}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;}
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="badge">COMPUTER SCIENCE PORTFOLIO</div>
+  <h1>알고리즘과 현대 <span class="glow">컴퓨팅</span></h1>
+  <p>미래의 컴퓨터 공학도를 위한 알고리즘 탐구와 인터랙티브 시각화</p>
+  <div class="scroll-hint">▼ 아래로 스크롤</div>
+</section>
+
+<!-- WHAT IS ALGORITHM -->
+<section>
+  <h2 class="sec-title rv">컴퓨터 과학의 본질: 알고리즘이란?</h2>
+  <div class="grid2">
+    <div class="card rv">
+      <h3 style="color:var(--cyan-bright)">1. 문제 해결의 논리적 설계</h3>
+      <p>알고리즘은 주어진 입력에 대해 올바른 출력을 반환하도록 만드는 단계적인 문제 해결 프로세스입니다. 자원을 얼마나 효율적으로 사용하는지(메모리와 시간 복잡도)가 알고리즘 설계의 궁극적인 성패를 가릅니다.</p>
+    </div>
+    <div class="card rv" style="border-color:rgba(34,211,238,.35)">
+      <h3 style="color:var(--cyan-bright)">2. 복잡도 분석의 언어 (Big-O)</h3>
+      <p>알고리즘의 효율성을 수리적으로 계량하고 모델링할 때 'Big-O 표기법'을 도입합니다. 입력 데이터 개수 N에 따른 계산량 스케일을 직관적으로 비교할 수 있는 표준 명세서입니다.</p>
+      <div class="bigo-chip">O(n log n)</div>
+    </div>
+  </div>
+</section>
+
+<!-- INTERSTITIAL 1 -->
+<section class="inter">
+  <div class="bar rv"></div>
+  <h2 class="rv">핵심 탐구 1<br>데이터 정렬 알고리즘 시각화</h2>
+  <p class="rv">기계적인 알고리즘이 순차적 조건 검증을 통하여 복잡한 데이터를 오름차순으로 어떻게 전개하는지 단계별 작동 과정으로 분석합니다.</p>
+</section>
+
+<!-- SORTING SIMULATOR -->
+<section>
+  <h2 class="sec-title rv">실시간 정렬 알고리즘 시뮬레이터</h2>
+  <div class="sim rv">
+    <div class="panel">
+      <h4>동작 제어 설정</h4>
+      <label class="small">알고리즘 종류</label>
+      <select id="algoSel">
+        <option value="bubble">버블 정렬 (Bubble Sort)</option>
+        <option value="selection">선택 정렬 (Selection Sort)</option>
+        <option value="insertion">삽입 정렬 (Insertion Sort)</option>
+        <option value="quick">퀵 정렬 (Quick Sort)</option>
+      </select>
+      <div class="speed-row">
+        <label class="small">애니메이션 속도 <span id="spdLabel">보통</span></label>
+        <input type="range" id="speed" min="1" max="3" value="2">
+      </div>
+      <button class="btn btn-play" id="playBtn">▶ 정렬 시작 (Play)</button>
+      <button class="btn btn-ghost" id="shuffleBtn">⤨ 배열 무작위 셔플</button>
+    </div>
+    <div class="panel">
+      <div class="stats">
+        <div class="stat">비교 횟수: <b id="cmpCnt">0</b></div>
+        <div class="stat">교환 횟수: <b id="swpCnt">0</b></div>
+        <div class="stat">시간 복잡도: <b class="o" id="bigO">O(n²)</b></div>
+      </div>
+      <div id="bars"></div>
+    </div>
+  </div>
+</section>
+
+<!-- INTERSTITIAL 2 -->
+<section class="inter">
+  <div class="bar rv"></div>
+  <h2 class="rv">핵심 탐구 2<br>네트워크 정보 암호화 기술</h2>
+  <p class="rv">보안과 신뢰성을 창조하는 암호학의 가장 직관적인 기초 원리, 카이사르 키-쉬프트 알고리즘의 동작 메커니즘을 체험합니다.</p>
+</section>
+
+<!-- CAESAR -->
+<section>
+  <h2 class="sec-title rv">실시간 카이사르 대칭키 암호화</h2>
+  <div class="caesar rv">
+    <div class="panel">
+      <label class="small">평문 입력 (PLAINTEXT)</label>
+      <textarea id="plain" spellcheck="false">HELLO WORLD</textarea>
+      <div class="key-row">
+        <label class="small" style="margin:0;white-space:nowrap">키 이동값 (SHIFT KEY)</label>
+        <input type="range" id="shift" min="0" max="25" value="3">
+        <div class="kv" id="shiftVal">3</div>
+      </div>
+    </div>
+    <div class="panel">
+      <label class="small">실시간 암호문 결과 (CIPHERTEXT)</label>
+      <div class="cipher-out" id="cipher"></div>
+      <div class="ascii-demo">
+        <div class="cap">ASCII 문자 알파벳 이동 구조</div>
+        <div class="ascii-flow">
+          <div class="chip from" id="demoFrom">H</div>
+          <div class="arrow">→</div>
+          <div class="arrow" id="demoShift">+3 Shift</div>
+          <div class="arrow">→</div>
+          <div class="chip to" id="demoTo">K</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BIG-O COMPARISON -->
+<section>
+  <h2 class="sec-title rv">빅오 시간복잡도 성능 비교</h2>
+  <div class="rv" id="ochart">
+    <div class="orow"><div class="lab">O(1) - 상수 시간</div><div class="track"><div class="fill f1" data-w="8%">15 ms (속도 유지)</div></div></div>
+    <div class="orow"><div class="lab">O(log n) - 이진 탐색</div><div class="track"><div class="fill f2" data-w="24%">45 ms (원만한 상승)</div></div></div>
+    <div class="orow"><div class="lab">O(n) - 순차 검색</div><div class="track"><div class="fill f3" data-w="46%">320 ms (정비례 상승)</div></div></div>
+    <div class="orow"><div class="lab">O(n²) - 버블 정렬</div><div class="track"><div class="fill f4" data-w="95%">4,500 ms (폭발적 증가)</div></div></div>
+  </div>
+  <p class="onote rv">인풋 데이터 N이 기하급수적으로 늘어날수록, 시간복잡도가 높은 알고리즘(<em>O(n²)</em>)은 심각한 시스템 지연을 발생시킵니다. 알고리즘 최적화 연구가 필수적인 이유입니다.</p>
+</section>
+
+<!-- TIMELINE -->
+<section>
+  <h2 class="sec-title rv">컴퓨터 과학의 역사적인 이정표</h2>
+  <div class="tl rv">
+    <div class="tl-line"></div>
+    <div class="tl-items">
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-card"><h5>1936년 - 튜링 기계</h5><p>앨런 튜링이 제안한 수학적 가상 머신 모델로 계산 및 알고리즘의 한계를 정의.</p></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-card"><h5>1946년 - ENIAC 탄생</h5><p>최초의 대규모 범용 전자식 디지털 컴퓨터로 가동 및 2진수 연산 토대 마련.</p></div>
+        <div class="tl-dot"></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-card"><h5>1991년 - WWW 개발</h5><p>월드와이드웹 프로토콜 공개를 기점으로 세계 네트워킹과 통신 알고리즘 폭발.</p></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-card"><h5>현재 - AI &amp; 양자 컴퓨팅</h5><p>병렬 신경망 연산 인공지능과 차세대 양자알고리즘을 향한 초고속 진화 패러다임.</p></div>
+        <div class="tl-dot"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOMAINS -->
+<section>
+  <h2 class="sec-title rv">도전할 컴퓨터공학 핵심 도메인</h2>
+  <div class="grid3">
+    <div class="card rv">
+      <div class="icon">🧠</div>
+      <h3>인공지능 및 기계학습</h3>
+      <p>인간 뇌 신경세포를 모방한 딥러닝 신경망 모델 아키텍처 및 고집적 가속 연산 알고리즘 연구 개발에 도전합니다.</p>
+    </div>
+    <div class="card rv">
+      <div class="icon">🛡️</div>
+      <h3>차세대 정보 보안</h3>
+      <p>양자 컴퓨터 환경에서도 해킹이 불가능한 강력한 양자 내성 암호체계(PQC)와 고신뢰성 네트워크 차단 방어 알고리즘 설계.</p>
+    </div>
+    <div class="card rv">
+      <div class="icon">🖧</div>
+      <h3>고성능 분산 컴퓨팅</h3>
+      <p>수만 개의 초병렬 물리 서버들 사이에서 데이터 패킷 전송 무결성을 지키는 대규모 분산 클라우드 처리 플랫폼 설계.</p>
+    </div>
+  </div>
+</section>
+
+<footer>Computer Science Portfolio · 알고리즘과 현대 컴퓨팅</footer>
+
+<script>
+/* ---------- scroll reveal ---------- */
+const io = new IntersectionObserver(es=>{
+  es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target);} });
+},{threshold:.15});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+/* ---------- Big-O chart animate ---------- */
+const chartIO = new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.fill').forEach((f,i)=>{
+        setTimeout(()=>{ f.style.width = f.dataset.w; }, i*180);
+      });
+      chartIO.unobserve(e.target);
+    }
+  });
+},{threshold:.4});
+chartIO.observe(document.getElementById('ochart'));
+
+/* ---------- Sorting simulator ---------- */
+const barsEl = document.getElementById('bars');
+const cmpEl = document.getElementById('cmpCnt');
+const swpEl = document.getElementById('swpCnt');
+const bigOEl = document.getElementById('bigO');
+const playBtn = document.getElementById('playBtn');
+const shuffleBtn = document.getElementById('shuffleBtn');
+const algoSel = document.getElementById('algoSel');
+const speedEl = document.getElementById('speed');
+const spdLabel = document.getElementById('spdLabel');
+
+const N = 24;
+let arr = [];
+let running = false;
+let cmp = 0, swp = 0;
+
+const bigOMap = {bubble:'O(n²)', selection:'O(n²)', insertion:'O(n²)', quick:'O(n log n)'};
+const spdMap = {1:['느림',180], 2:['보통',80], 3:['빠름',25]};
+
+function delayMs(){ return spdMap[speedEl.value][1]; }
+speedEl.addEventListener('input', ()=>{ spdLabel.textContent = spdMap[speedEl.value][0]; });
+
+function shuffle(){
+  arr = Array.from({length:N}, ()=>Math.floor(Math.random()*95)+5);
+  cmp = 0; swp = 0;
+  render();
+}
+function render(states={}){
+  cmpEl.textContent = cmp;
+  swpEl.textContent = swp;
+  barsEl.innerHTML = '';
+  const max = Math.max(...arr);
+  arr.forEach((v,i)=>{
+    const d = document.createElement('div');
+    d.className = 'bar-el' + (states[i] ? ' '+states[i] : '');
+    d.style.height = (v/max*100)+'%';
+    d.innerHTML = '<span>'+v+'</span>';
+    barsEl.appendChild(d);
+  });
+}
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+
+async function mark(states){
+  render(states);
+  await sleep(delayMs());
+  if(!running) throw 'stopped';
+}
+async function doSwap(i,j,extra={}){
+  [arr[i],arr[j]] = [arr[j],arr[i]];
+  swp++;
+  await mark({...extra,[i]:'swap',[j]:'swap'});
+}
+
+async function bubbleSort(){
+  const done = {};
+  for(let end=N-1; end>0; end--){
+    for(let i=0;i<end;i++){
+      cmp++;
+      await mark({...done,[i]:'compare',[i+1]:'compare'});
+      if(arr[i]>arr[i+1]) await doSwap(i,i+1,done);
+    }
+    done[end]='sorted';
+  }
+  done[0]='sorted';
+  render(done);
+}
+async function selectionSort(){
+  const done = {};
+  for(let s=0;s<N-1;s++){
+    let min=s;
+    for(let i=s+1;i<N;i++){
+      cmp++;
+      await mark({...done,[min]:'swap',[i]:'compare'});
+      if(arr[i]<arr[min]) min=i;
+    }
+    if(min!==s) await doSwap(s,min,done);
+    done[s]='sorted';
+  }
+  done[N-1]='sorted';
+  render(done);
+}
+async function insertionSort(){
+  for(let i=1;i<N;i++){
+    let j=i;
+    while(j>0){
+      cmp++;
+      await mark({[j]:'compare',[j-1]:'compare'});
+      if(arr[j-1]>arr[j]){ await doSwap(j,j-1); j--; }
+      else break;
+    }
+  }
+  render(Object.fromEntries(arr.map((_,i)=>[i,'sorted'])));
+}
+async function quickSort(lo=0,hi=N-1){
+  if(lo>=hi) return;
+  const pivot = arr[hi];
+  let p = lo;
+  for(let i=lo;i<hi;i++){
+    cmp++;
+    await mark({[i]:'compare',[hi]:'swap'});
+    if(arr[i]<pivot){
+      if(i!==p) await doSwap(i,p);
+      p++;
+    }
+  }
+  if(p!==hi) await doSwap(p,hi);
+  await quickSort(lo,p-1);
+  await quickSort(p+1,hi);
+}
+
+algoSel.addEventListener('change', ()=>{ bigOEl.textContent = bigOMap[algoSel.value]; });
+
+playBtn.addEventListener('click', async ()=>{
+  if(running) return;
+  running = true;
+  cmp=0; swp=0;
+  playBtn.disabled = true;
+  playBtn.textContent = '⏳ 정렬 진행 중...';
+  try{
+    const a = algoSel.value;
+    if(a==='bubble') await bubbleSort();
+    else if(a==='selection') await selectionSort();
+    else if(a==='insertion') await insertionSort();
+    else {
+      await quickSort();
+      render(Object.fromEntries(arr.map((_,i)=>[i,'sorted'])));
+    }
+  }catch(e){ /* stopped by shuffle */ }
+  running = false;
+  playBtn.disabled = false;
+  playBtn.textContent = '▶ 정렬 시작 (Play)';
+});
+shuffleBtn.addEventListener('click', ()=>{
+  running = false;
+  setTimeout(shuffle, 30);
+});
+shuffle();
+
+/* ---------- Caesar cipher ---------- */
+const plainEl = document.getElementById('plain');
+const shiftEl = document.getElementById('shift');
+const shiftVal = document.getElementById('shiftVal');
+const cipherEl = document.getElementById('cipher');
+const demoFrom = document.getElementById('demoFrom');
+const demoTo = document.getElementById('demoTo');
+const demoShift = document.getElementById('demoShift');
+
+function caesar(text, k){
+  return [...text].map(ch=>{
+    const c = ch.charCodeAt(0);
+    if(c>=65 && c<=90)  return String.fromCharCode((c-65+k)%26+65);
+    if(c>=97 && c<=122) return String.fromCharCode((c-97+k)%26+97);
+    return ch;
+  }).join('');
+}
+function updateCipher(){
+  const k = +shiftEl.value;
+  shiftVal.textContent = k;
+  demoShift.textContent = '+'+k+' Shift';
+  cipherEl.textContent = caesar(plainEl.value, k);
+  const firstAlpha = [...plainEl.value].find(ch=>/[a-zA-Z]/.test(ch)) || 'H';
+  demoFrom.textContent = firstAlpha.toUpperCase();
+  demoTo.textContent = caesar(firstAlpha.toUpperCase(), k);
+}
+plainEl.addEventListener('input', updateCipher);
+shiftEl.addEventListener('input', updateCipher);
+updateCipher();
+</script>
+</body>
+</html>
